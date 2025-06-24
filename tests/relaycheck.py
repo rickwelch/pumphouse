@@ -9,7 +9,6 @@ import json
 import sqlite3
 
 from tkinter import *
-from levelbar import LevelBar
 
 showed_time="00:00:00"
 movements = 0
@@ -63,16 +62,16 @@ GPIO.output(GPIO_R4,1)
 try:
     while 1:
         pump_on(GPIO_R1);
-        time.sleep(5)
+        time.sleep(2)
         pump_off(GPIO_R1);
         pump_on(GPIO_R2);
-        time.sleep(5)
+        time.sleep(2)
         pump_off(GPIO_R2);
         pump_on(GPIO_R3);
-        time.sleep(5)
+        time.sleep(2)
         pump_off(GPIO_R3);
         pump_on(GPIO_R4);
-        time.sleep(5)
+        time.sleep(2)
         pump_off(GPIO_R4);
 except Exception as e:
     print(f"An error occurred: {e}")
