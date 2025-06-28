@@ -1,4 +1,4 @@
 [Desktop Entry]
 Type=Application
 Name=Pumphouse Controller System
-Exec=/opt/pumphouse/app.py
+Exec=/opt/pumphouse/pumphouse.py
