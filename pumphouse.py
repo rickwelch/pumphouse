@@ -366,7 +366,7 @@ def pump_button():
     
 def pump_on():
     global canvas2, pump_id
-    GPIO.output(GPIO_R3,0)
+    GPIO.output(GPIO_R4,0)
     pump_id.config(text='Pump Off')
     pump_id.config(command=pump_off)
     pump_id.config(bg='red')
@@ -374,7 +374,7 @@ def pump_on():
     
 def pump_off():
     global canvas2, pump_id, pump_seconds_remaining
-    GPIO.output(GPIO_R3,1)
+    GPIO.output(GPIO_R4,1)
     pump_id.config(text='Pump On')
     pump_id.config(activebackground='green')
     pump_id.config(bg='green')
