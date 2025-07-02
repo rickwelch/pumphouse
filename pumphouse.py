@@ -363,6 +363,7 @@ def pump_timer(time):
 def pump_button():
     pump_timer(300)
     pump_seconds_remaining = 300
+    sendEventToCloud("buttonPressPumpStart")
     
 def pump_on():
     global canvas2, pump_id
@@ -380,6 +381,7 @@ def pump_off():
     pump_id.config(bg='green')
     pump_id.config(command=pump_button)
     pump_seconds_remaining=0
+    sendEventToCloud("buttonPressPumpStop")
     canvas2.itemconfigure(pump_time_id,text=pump_seconds_remaining)
 
 
@@ -554,7 +556,7 @@ canvas2.create_text(100,150, text=wifi)
 #shown_well_pump_on = data['LOC2']['mainpump']
 #well_pump_on = shown_well_pump_on
 
-pump_id = Button(canvas2, width=6,  height=2, text="Pump On", bg="green", activebackground='green',  bd=10, command=pump_on)
+pump_id = Button(canvas2, width=6,  height=2, text="Pump On", bg="green", activebackground='green',  bd=10, command=pump_button)
 pump_id.place(x=10, y=400)
 pump_time_id = canvas2.create_text(60, 480, fill='green', font='Times 20 bold', text="00")
 
