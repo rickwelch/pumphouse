@@ -19,8 +19,7 @@ from tkinter import *
 from levelbar import LevelBar
 
 import board
-
-
+import netifaces
 import busio
 
 import adafruit_ads1x15.ads1115 as ADS
@@ -130,6 +129,28 @@ shown_last_status_to_server = ""
 busCurrentFault = 0
 
 waterPressureFault = 0
+
+
+def get_network_connection_type():
+    interfaces = netifaces.interfaces() # Get a list of all network interfaces
+
+    ethernet_interfaces = ['eth0', 'enp0s3'] # Common Ethernet interface names
+    wifi_interfaces = ['wlan0'] # Common Wi-Fi interface names
+
+    for iface in interfaces:
+        try:
+            addresses = netifaces.ifaddresses(iface)
+            if netifaces.AF_INET in addresses:  # Check for IPv4 address
+                if iface in ethernet_interfaces:
+                    return "Ethernet"
+                elif iface in wifi_interfaces:
+                    return "Wi-Fi"
+        except ValueError:
+            # Interface might not have an assigned address yet
+            pass
+
+    return "Unknown or No Connection"
+
 
 def get_wifi_ssid():
     try:
@@ -363,6 +384,7 @@ def pump_timer(time):
 def pump_button():
     pump_timer(300)
     pump_seconds_remaining = 300
+    sendEventToCloud("buttonPressPumpStart")
     
 def pump_on():
     global canvas2, pump_id
@@ -380,6 +402,7 @@ def pump_off():
     pump_id.config(bg='green')
     pump_id.config(command=pump_button)
     pump_seconds_remaining=0
+    sendEventToCloud("buttonPressPumpStop")
     canvas2.itemconfigure(pump_time_id,text=pump_seconds_remaining)
 
 
@@ -453,9 +476,11 @@ GPIO.output(GPIO_R4,1)
 
 GPIO.setup(GPIO_MOTION, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.add_event_detect(GPIO_MOTION, GPIO.RISING, callback=motion_callback, bouncetime=100)
-    
+if get_network_connection_type() == 'Ethernet':
+	wifi = 'Winegard'
+else: 
+	wifi = get_wifi_ssid()
 
-wifi = get_wifi_ssid()
 print(f"WiFi: {wifi}")
 
 # do we have keys for this site?
@@ -554,7 +579,7 @@ canvas2.create_text(100,150, text=wifi)
 #shown_well_pump_on = data['LOC2']['mainpump']
 #well_pump_on = shown_well_pump_on
 
-pump_id = Button(canvas2, width=6,  height=2, text="Pump On", bg="green", activebackground='green',  bd=10, command=pump_on)
+pump_id = Button(canvas2, width=6,  height=2, text="Pump On", bg="green", activebackground='green',  bd=10, command=pump_button)
 pump_id.place(x=10, y=400)
 pump_time_id = canvas2.create_text(60, 480, fill='green', font='Times 20 bold', text="00")
 
