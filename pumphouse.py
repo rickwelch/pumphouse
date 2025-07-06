@@ -19,8 +19,7 @@ from tkinter import *
 from levelbar import LevelBar
 
 import board
-
-
+import netifaces
 import busio
 
 import adafruit_ads1x15.ads1115 as ADS
@@ -130,6 +129,28 @@ shown_last_status_to_server = ""
 busCurrentFault = 0
 
 waterPressureFault = 0
+
+
+def get_network_connection_type():
+    interfaces = netifaces.interfaces() # Get a list of all network interfaces
+
+    ethernet_interfaces = ['eth0', 'enp0s3'] # Common Ethernet interface names
+    wifi_interfaces = ['wlan0'] # Common Wi-Fi interface names
+
+    for iface in interfaces:
+        try:
+            addresses = netifaces.ifaddresses(iface)
+            if netifaces.AF_INET in addresses:  # Check for IPv4 address
+                if iface in ethernet_interfaces:
+                    return "Ethernet"
+                elif iface in wifi_interfaces:
+                    return "Wi-Fi"
+        except ValueError:
+            # Interface might not have an assigned address yet
+            pass
+
+    return "Unknown or No Connection"
+
 
 def get_wifi_ssid():
     try:
@@ -455,9 +476,11 @@ GPIO.output(GPIO_R4,1)
 
 GPIO.setup(GPIO_MOTION, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.add_event_detect(GPIO_MOTION, GPIO.RISING, callback=motion_callback, bouncetime=100)
-    
+if get_network_connection_type() == 'Ethernet':
+	wifi = 'Winegard'
+else: 
+	wifi = get_wifi_ssid()
 
-wifi = get_wifi_ssid()
 print(f"WiFi: {wifi}")
 
 # do we have keys for this site?
