@@ -29,6 +29,7 @@ To install this code
 * pip install adafruit-circuitpython-ina219
 * pip install RPi.bme280
 * pip install rpi-lgpio
+* pip install netifaces
 
 If you want this automatically started at boot copy ./loginuser/.config/autostart/pumphouse.desktop to the user that is automaticsally logged in when the pi boots. Usually pi but I generally change it.
 
