@@ -19,7 +19,7 @@ from tkinter import *
 from levelbar import LevelBar
 
 import board
-import netifaces
+#import netifaces
 import busio
 
 import adafruit_ads1x15.ads1115 as ADS
@@ -382,15 +382,19 @@ def pump_timer(time):
     pump_seconds_remaining = time
 
 def pump_button():
-    pump_timer(300)
-    pump_seconds_remaining = 300
+    pump_timer(600)
+    pump_seconds_remaining = 600
     sendEventToCloud("buttonPressPumpStart")
+
+def pump_button_off():
+    pump_off()
+    sendEventToCloud("buttonPressPumpStop")
     
 def pump_on():
     global canvas2, pump_id
     GPIO.output(GPIO_R4,0)
     pump_id.config(text='Pump Off')
-    pump_id.config(command=pump_off)
+    pump_id.config(command=pump_button_off)
     pump_id.config(bg='red')
     pump_id.config(activebackground='red')
     
@@ -402,7 +406,6 @@ def pump_off():
     pump_id.config(bg='green')
     pump_id.config(command=pump_button)
     pump_seconds_remaining=0
-    sendEventToCloud("buttonPressPumpStop")
     canvas2.itemconfigure(pump_time_id,text=pump_seconds_remaining)
 
 
@@ -476,10 +479,10 @@ GPIO.output(GPIO_R4,1)
 
 GPIO.setup(GPIO_MOTION, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.add_event_detect(GPIO_MOTION, GPIO.RISING, callback=motion_callback, bouncetime=100)
-if get_network_connection_type() == 'Ethernet':
-	wifi = 'Winegard'
+if False: #get_network_connection_type() == 'Ethernet':
+    wifi = 'Winegard'
 else: 
-	wifi = get_wifi_ssid()
+    wifi = get_wifi_ssid()
 
 print(f"WiFi: {wifi}")
 
